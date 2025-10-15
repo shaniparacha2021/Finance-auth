@@ -8,6 +8,9 @@ export interface Database {
           description: string
           file_url: string | null
           file_name: string | null
+          file_data: string | null
+          file_size: number | null
+          file_type: string | null
           created_at: string
           updated_at: string
         }
@@ -17,6 +20,9 @@ export interface Database {
           description: string
           file_url?: string | null
           file_name?: string | null
+          file_data?: string | null
+          file_size?: number | null
+          file_type?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -26,6 +32,9 @@ export interface Database {
           description?: string
           file_url?: string | null
           file_name?: string | null
+          file_data?: string | null
+          file_size?: number | null
+          file_type?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -38,6 +47,9 @@ export interface Database {
           description: string
           file_url: string | null
           file_name: string | null
+          file_data: string | null
+          file_size: number | null
+          file_type: string | null
           created_at: string
           updated_at: string
         }
@@ -48,6 +60,9 @@ export interface Database {
           description: string
           file_url?: string | null
           file_name?: string | null
+          file_data?: string | null
+          file_size?: number | null
+          file_type?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -58,6 +73,9 @@ export interface Database {
           description?: string
           file_url?: string | null
           file_name?: string | null
+          file_data?: string | null
+          file_size?: number | null
+          file_type?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -69,6 +87,9 @@ export interface Database {
           description: string
           file_url: string | null
           file_name: string | null
+          file_data: string | null
+          file_size: number | null
+          file_type: string | null
           created_at: string
           updated_at: string
         }
@@ -78,6 +99,9 @@ export interface Database {
           description: string
           file_url?: string | null
           file_name?: string | null
+          file_data?: string | null
+          file_size?: number | null
+          file_type?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -87,6 +111,9 @@ export interface Database {
           description?: string
           file_url?: string | null
           file_name?: string | null
+          file_data?: string | null
+          file_size?: number | null
+          file_type?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -94,25 +121,37 @@ export interface Database {
       latest_updates: {
         Row: {
           id: string
+          heading: string
           description: string
           file_url: string | null
           file_name: string | null
+          file_data: string | null
+          file_size: number | null
+          file_type: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
+          heading: string
           description: string
           file_url?: string | null
           file_name?: string | null
+          file_data?: string | null
+          file_size?: number | null
+          file_type?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
+          heading?: string
           description?: string
           file_url?: string | null
           file_name?: string | null
+          file_data?: string | null
+          file_size?: number | null
+          file_type?: string | null
           created_at?: string
           updated_at?: string
         }

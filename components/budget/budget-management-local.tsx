@@ -67,12 +67,18 @@ export function BudgetManagementLocal() {
     try {
       let fileName = ''
       let fileUrl = ''
+      let fileData = ''
+      let fileSize = 0
+      let fileType = ''
 
       // Handle file upload if file is selected
       if (formData.file) {
         const uploadResult = await uploadFile(formData.file, 'budgets')
         fileName = uploadResult.fileName
         fileUrl = uploadResult.fileUrl
+        fileData = uploadResult.fileUrl // This is now a base64 data URL
+        fileSize = uploadResult.fileSize || 0
+        fileType = uploadResult.fileType || ''
       }
 
       if (editingBudget) {
@@ -85,12 +91,11 @@ export function BudgetManagementLocal() {
 
         // Only update file if new file is uploaded
         if (formData.file) {
-          // Delete old file if it exists
-          if (editingBudget.file_url) {
-            await deleteFile(editingBudget.file_url)
-          }
           updateData.file_name = fileName
           updateData.file_url = fileUrl
+          updateData.file_data = fileData
+          updateData.file_size = fileSize
+          updateData.file_type = fileType
         }
 
         const { error } = await supabase
@@ -107,8 +112,11 @@ export function BudgetManagementLocal() {
           .insert({
             financial_year: formData.financial_year,
             description: formData.description,
-            file_name: fileName,
-            file_url: fileUrl
+            file_name: fileName || null,
+            file_url: fileUrl || null,
+            file_data: fileData || null,
+            file_size: fileSize || null,
+            file_type: fileType || null
           })
 
         if (error) throw error
@@ -143,10 +151,8 @@ export function BudgetManagementLocal() {
     if (!confirm('Are you sure you want to delete this budget?')) return
 
     try {
-      // Delete file if it exists
-      if (budget.file_url) {
-        await deleteFile(budget.file_url)
-      }
+      // For base64 storage, we don't need to delete files separately
+      // The file data is stored in the database and will be removed with the record
 
       const { error } = await supabase
         .from('budgets')

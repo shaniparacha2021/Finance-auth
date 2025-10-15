@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
 
-const UPLOAD_DIR = join(process.cwd(), 'public', 'uploads')
 const BUCKETS = {
   budgets: 'budget-files',
   rules: 'rules-files', 
@@ -24,29 +21,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid bucket' }, { status: 400 })
     }
 
-    // Create directory if it doesn't exist
-    const bucketDir = join(UPLOAD_DIR, BUCKETS[bucket])
-    await mkdir(bucketDir, { recursive: true })
-
     // Generate unique filename
     const timestamp = Date.now()
     const originalName = file.name
-    const extension = originalName.split('.').pop()
     const fileName = `${timestamp}-${originalName}`
     
-    // Create file path
-    const filePath = join(bucketDir, fileName)
-    const fileUrl = `/uploads/${BUCKETS[bucket]}/${fileName}`
-
-    // Convert File to Buffer and save
+    // Convert File to base64 for storage in database
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    await writeFile(filePath, buffer)
+    const base64Data = buffer.toString('base64')
+    const dataUrl = `data:${file.type};base64,${base64Data}`
 
+    // Return the file information
+    // The file will be stored as base64 in the database and served via a data URL
     return NextResponse.json({
       fileName,
-      filePath,
-      fileUrl
+      filePath: `${BUCKETS[bucket]}/${fileName}`,
+      fileUrl: dataUrl,
+      fileSize: file.size,
+      fileType: file.type
     })
   } catch (error) {
     console.error('File upload error:', error)
@@ -63,14 +56,11 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'No file URL provided' }, { status: 400 })
     }
 
-    const { unlink } = await import('fs/promises')
-    const filePath = join(process.cwd(), 'public', fileUrl)
-    await unlink(filePath)
-
+    // For base64 data URLs, we don't need to delete anything from filesystem
+    // The file is stored in the database and will be removed when the record is deleted
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('File deletion error:', error)
-    // Don't throw error if file doesn't exist
     return NextResponse.json({ success: true })
   }
 }
