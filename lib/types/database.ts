@@ -11,6 +11,9 @@ export interface Database {
           file_data: string | null
           file_size: number | null
           file_type: string | null
+          github_file_path: string | null
+          github_sha: string | null
+          github_url: string | null
           created_at: string
           updated_at: string
         }
@@ -23,6 +26,9 @@ export interface Database {
           file_data?: string | null
           file_size?: number | null
           file_type?: string | null
+          github_file_path?: string | null
+          github_sha?: string | null
+          github_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -35,6 +41,9 @@ export interface Database {
           file_data?: string | null
           file_size?: number | null
           file_type?: string | null
+          github_file_path?: string | null
+          github_sha?: string | null
+          github_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -50,6 +59,9 @@ export interface Database {
           file_data: string | null
           file_size: number | null
           file_type: string | null
+          github_file_path: string | null
+          github_sha: string | null
+          github_url: string | null
           created_at: string
           updated_at: string
         }
@@ -63,6 +75,9 @@ export interface Database {
           file_data?: string | null
           file_size?: number | null
           file_type?: string | null
+          github_file_path?: string | null
+          github_sha?: string | null
+          github_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -76,6 +91,9 @@ export interface Database {
           file_data?: string | null
           file_size?: number | null
           file_type?: string | null
+          github_file_path?: string | null
+          github_sha?: string | null
+          github_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -90,6 +108,9 @@ export interface Database {
           file_data: string | null
           file_size: number | null
           file_type: string | null
+          github_file_path: string | null
+          github_sha: string | null
+          github_url: string | null
           created_at: string
           updated_at: string
         }
@@ -102,6 +123,9 @@ export interface Database {
           file_data?: string | null
           file_size?: number | null
           file_type?: string | null
+          github_file_path?: string | null
+          github_sha?: string | null
+          github_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -114,6 +138,9 @@ export interface Database {
           file_data?: string | null
           file_size?: number | null
           file_type?: string | null
+          github_file_path?: string | null
+          github_sha?: string | null
+          github_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -128,6 +155,9 @@ export interface Database {
           file_data: string | null
           file_size: number | null
           file_type: string | null
+          github_file_path: string | null
+          github_sha: string | null
+          github_url: string | null
           created_at: string
           updated_at: string
         }
@@ -140,6 +170,9 @@ export interface Database {
           file_data?: string | null
           file_size?: number | null
           file_type?: string | null
+          github_file_path?: string | null
+          github_sha?: string | null
+          github_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -152,6 +185,9 @@ export interface Database {
           file_data?: string | null
           file_size?: number | null
           file_type?: string | null
+          github_file_path?: string | null
+          github_sha?: string | null
+          github_url?: string | null
           created_at?: string
           updated_at?: string
         }

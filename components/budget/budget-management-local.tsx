@@ -19,6 +19,9 @@ interface Budget {
   description: string
   file_name?: string
   file_url?: string
+  github_file_path?: string
+  github_sha?: string
+  github_url?: string
   created_at: string
   updated_at: string
 }
@@ -67,13 +70,15 @@ export function BudgetManagementLocal() {
     try {
       let fileName = ''
       let fileUrl = ''
+      let uploadResult: any = null
 
       // Handle file upload if file is selected
       if (formData.file) {
         try {
-          const uploadResult = await uploadFile(formData.file, 'budgets')
+          uploadResult = await uploadFile(formData.file, 'budgets')
           fileName = uploadResult.fileName
           fileUrl = uploadResult.fileUrl
+          console.log('Upload result:', uploadResult)
         } catch (uploadError) {
           console.error('File upload error:', uploadError)
           setError('Failed to upload file')
@@ -91,11 +96,17 @@ export function BudgetManagementLocal() {
           updated_at: new Date().toISOString()
         }
 
-        // Only update file if new file is uploaded
-        if (formData.file) {
-          updateData.file_name = fileName
-          updateData.file_url = fileUrl
-        }
+                // Only update file if new file is uploaded
+                if (formData.file) {
+                  updateData.file_name = fileName
+                  updateData.file_url = fileUrl
+                  // Store GitHub file information if available
+                  if (uploadResult?.githubSha) {
+                    updateData.github_file_path = uploadResult.filePath
+                    updateData.github_sha = uploadResult.githubSha
+                    updateData.github_url = uploadResult.githubUrl
+                  }
+                }
 
         const { error } = await supabase
           .from('budgets')
@@ -107,16 +118,25 @@ export function BudgetManagementLocal() {
           throw error
         }
         toast.success('Budget updated successfully')
-      } else {
-        // Create new budget
-        const { error } = await supabase
-          .from('budgets')
-          .insert({
-            financial_year: formData.financial_year,
-            description: formData.description,
-            file_name: fileName || null,
-            file_url: fileUrl || null
-          })
+              } else {
+                // Create new budget
+                const insertData: any = {
+                  financial_year: formData.financial_year,
+                  description: formData.description,
+                  file_name: fileName || null,
+                  file_url: fileUrl || null
+                }
+
+                // Add GitHub file information if available
+                if (uploadResult?.githubSha) {
+                  insertData.github_file_path = uploadResult.filePath
+                  insertData.github_sha = uploadResult.githubSha
+                  insertData.github_url = uploadResult.githubUrl
+                }
+
+                const { error } = await supabase
+                  .from('budgets')
+                  .insert(insertData)
 
         if (error) {
           console.error('Database insert error:', error)
