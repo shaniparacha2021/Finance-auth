@@ -67,18 +67,20 @@ export function BudgetManagementLocal() {
     try {
       let fileName = ''
       let fileUrl = ''
-      let fileData = ''
-      let fileSize = 0
-      let fileType = ''
 
       // Handle file upload if file is selected
       if (formData.file) {
-        const uploadResult = await uploadFile(formData.file, 'budgets')
-        fileName = uploadResult.fileName
-        fileUrl = uploadResult.fileUrl
-        fileData = uploadResult.fileUrl // This is now a base64 data URL
-        fileSize = uploadResult.fileSize || 0
-        fileType = uploadResult.fileType || ''
+        try {
+          const uploadResult = await uploadFile(formData.file, 'budgets')
+          fileName = uploadResult.fileName
+          fileUrl = uploadResult.fileUrl
+        } catch (uploadError) {
+          console.error('File upload error:', uploadError)
+          setError('Failed to upload file')
+          toast.error('Failed to upload file')
+          setSubmitting(false)
+          return
+        }
       }
 
       if (editingBudget) {
@@ -93,9 +95,6 @@ export function BudgetManagementLocal() {
         if (formData.file) {
           updateData.file_name = fileName
           updateData.file_url = fileUrl
-          updateData.file_data = fileData
-          updateData.file_size = fileSize
-          updateData.file_type = fileType
         }
 
         const { error } = await supabase
@@ -103,7 +102,10 @@ export function BudgetManagementLocal() {
           .update(updateData)
           .eq('id', editingBudget.id)
 
-        if (error) throw error
+        if (error) {
+          console.error('Database update error:', error)
+          throw error
+        }
         toast.success('Budget updated successfully')
       } else {
         // Create new budget
@@ -113,13 +115,13 @@ export function BudgetManagementLocal() {
             financial_year: formData.financial_year,
             description: formData.description,
             file_name: fileName || null,
-            file_url: fileUrl || null,
-            file_data: fileData || null,
-            file_size: fileSize || null,
-            file_type: fileType || null
+            file_url: fileUrl || null
           })
 
-        if (error) throw error
+        if (error) {
+          console.error('Database insert error:', error)
+          throw error
+        }
         toast.success('Budget created successfully')
       }
 
@@ -130,7 +132,7 @@ export function BudgetManagementLocal() {
       fetchBudgets()
     } catch (err) {
       console.error('Error saving budget:', err)
-      setError('Failed to save budget')
+      setError(`Failed to save budget: ${err instanceof Error ? err.message : 'Unknown error'}`)
       toast.error('Failed to save budget')
     } finally {
       setSubmitting(false)
@@ -151,15 +153,15 @@ export function BudgetManagementLocal() {
     if (!confirm('Are you sure you want to delete this budget?')) return
 
     try {
-      // For base64 storage, we don't need to delete files separately
-      // The file data is stored in the database and will be removed with the record
-
       const { error } = await supabase
         .from('budgets')
         .delete()
         .eq('id', budget.id)
 
-      if (error) throw error
+      if (error) {
+        console.error('Database delete error:', error)
+        throw error
+      }
       toast.success('Budget deleted successfully')
       fetchBudgets()
     } catch (err) {

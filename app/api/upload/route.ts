@@ -39,7 +39,8 @@ export async function POST(request: NextRequest) {
       filePath: `${BUCKETS[bucket]}/${fileName}`,
       fileUrl: dataUrl,
       fileSize: file.size,
-      fileType: file.type
+      fileType: file.type,
+      fileData: dataUrl // Add this for backward compatibility
     })
   } catch (error) {
     console.error('File upload error:', error)
